@@ -1,8 +1,10 @@
 from django.db import models
+import datetime
+
 
 class Question(models.Model):
     question_text = models.CharField(max_length=1024)
-    date = models.CharField(max_length=8)
+    date = models.CharField(max_length=8, unique=True)
 
     def __str__(self):
         return "Question: " + str(self.pk) + " - " + self.date + " - " + self.question_text
@@ -21,4 +23,4 @@ class Response(models.Model):
         return super(Response, self).save(*args, **kwargs)
 
     def __str__(self):
-        return "Response: " + str(self.pk) + " - User: " + self.user.pk
+        return "Response: " + str(self.pk) + " - User: " + str(self.user.pk)
