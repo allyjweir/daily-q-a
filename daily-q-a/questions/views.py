@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import TemplateView, FormView, View
+from django.utils import timezone
 
 from braces.views import LoginRequiredMixin
 
@@ -13,7 +14,7 @@ import time
 class TodayView(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
-        current_question = Question.objects.get(date = time.strftime("%m/%d"))
+        current_question = Question.objects.get(date = timezone.now().strftime("%m/%d"))
         has_answered = Response.objects.filter(question=current_question).filter(user=self.request.user).count() > 0
 
         if (has_answered):
@@ -39,7 +40,7 @@ class TodayForm(LoginRequiredMixin, FormView):
     def get_context_data(self, **kwargs):
         context = super(TodayForm, self).get_context_data(**kwargs)
 
-        context["today_date"] = time.strftime("%m/%d")
+        context["today_date"] = timezone.now().strftime("%m/%d")
         context['today_question'] = Question.objects.get(date=context["today_date"])
 
         return context
@@ -48,7 +49,7 @@ class TodayForm(LoginRequiredMixin, FormView):
         response = form.save(commit=False)
         response.user = self.request.user
 
-        response.question = Question.objects.get(date=time.strftime("%m/%d"))
+        response.question = Question.objects.get(date=timezone.now().strftime("%m/%d"))
         response.save()
         return HttpResponseRedirect(self.get_success_url())
 
