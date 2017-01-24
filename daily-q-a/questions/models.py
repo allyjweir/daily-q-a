@@ -1,6 +1,6 @@
 from django.db import models
 import datetime
-
+import pytz
 
 class Question(models.Model):
     question_text = models.CharField(max_length=1024)
@@ -19,7 +19,7 @@ class Response(models.Model):
     def save(self, *args, **kwargs):
         ''' On save, update timestamps '''
         if not self.id:
-            self.created = datetime.datetime.today()
+            self.created = datetime.datetime.now(pytz.utc)
         return super(Response, self).save(*args, **kwargs)
 
     def __str__(self):
